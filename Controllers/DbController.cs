@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace QuizServer.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Db")]
     public class DbController : ControllerBase
     {
         private readonly DataContext _context;

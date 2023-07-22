@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting; 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting; 
+using Microsoft.Extensions.Hosting;
 using QuizServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -21,13 +21,22 @@ namespace QuizServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            {
-                services.AddDbContext<DataContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-                services.AddControllers();
-            }
-            //services.AddControllers();
+            services.AddControllers();
+
+            // Configure CORS
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "QuizServer", Version = "v1" });
@@ -47,6 +56,9 @@ namespace QuizServer
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // Allow CORS
+            app.UseCors();
 
             app.UseAuthorization();
 
